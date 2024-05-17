@@ -9,6 +9,8 @@ from langchain.callbacks.base import BaseCallbackHandler
 from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
+from langchain.tools.render import render_text_description
+from langchain.prompts.prompt import PromptTemplate
 
 from PIL import Image, UnidentifiedImageError
 
@@ -16,6 +18,11 @@ from config import config
 from models import ChatModel
 from prompts import CLAUDE_AGENT_PROMPT
 from tools import LLM_AGENT_TOOLS
+
+tools_list = render_text_description(LLM_AGENT_TOOLS)
+print("[DEBUG] tools_list", tools_list)
+tool_names = ", ".join((t.name for t in LLM_AGENT_TOOLS))
+print("[DEBUG] tool_names", tool_names)
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -261,38 +268,30 @@ def langchain_messages_format(
 def _handle_error(error)->str:
     return str(error)[:50]
 
-def get_agentic_chatbot_conversation_chain(chat_model: ChatModel, verbose: bool, memory_window: int, memory: ConversationBufferWindowMemory = None):
+def get_agentic_chatbot_conversation_chain(chat_model: ChatModel, verbose: bool, memory: ConversationBufferWindowMemory, prompt=None):
     """
     獲取 agent chain。
     """
-    if memory is None:
-        memory = ConversationBufferWindowMemory(
-            k=memory_window,
-            ai_prefix="Assistant",
-            human_prefix="Hu",
-            chat_memory=StreamlitChatMessageHistory(),
-            return_messages=True,
-            memory_key="chat_history",
-            input_key="input"
-        )
-
-    print("[DEBUG] CLAUDE_AGENT_PROMPT", CLAUDE_AGENT_PROMPT)
+    _prompt = CLAUDE_AGENT_PROMPT if prompt is None else PromptTemplate.from_template(
+        template=prompt
+    )
+    print("[DEBUG] prompt", _prompt)
 
     agent = create_react_agent(
         llm=chat_model.llm,
         tools=LLM_AGENT_TOOLS,
-        prompt=CLAUDE_AGENT_PROMPT,
-        stop_sequence=["最終答案", "無法回答"],
+        prompt=_prompt,
+        stop_sequence=["End of response."],
     )
 
     agent_chain = AgentExecutor.from_agent_and_tools(
         agent=agent,
         tools=LLM_AGENT_TOOLS,
         verbose=verbose,
-        return_intermediate_steps=True,
+        return_intermediate_steps=False,
         memory=memory,
         # handle_parsing_errors="Check your output and make sure it conforms!",
-        handle_parsing_errors=_handle_error,
+        handle_parsing_errors=True,
     )
 
     # Store LLM generated responses
@@ -326,9 +325,22 @@ def main() -> None:
                 st.button("New Chat", on_click=new_chat, type="primary")
 
     model_kwargs, memory_window = render_sidebar()
-
     chat_model = ChatModel(st.session_state["model_name"], model_kwargs)
-    conv_chain = get_agentic_chatbot_conversation_chain(chat_model, verbose=True, memory_window=memory_window)
+    memory = ConversationBufferWindowMemory(
+        k=memory_window,
+        ai_prefix="Assistant",
+        human_prefix="Hu",
+        chat_memory=StreamlitChatMessageHistory(),
+        return_messages=False,
+        memory_key="chat_history",
+        input_key="input"
+    )
+    conv_chain = get_agentic_chatbot_conversation_chain(
+        chat_model,
+        verbose=True,
+        memory=memory,
+        prompt=model_kwargs["system"]
+    )
 
     # Image uploader
     if "file_uploader_key" not in st.session_state:
@@ -367,7 +379,8 @@ def main() -> None:
                 }, 
                 {
                     "callbacks": [StreamHandler(st.empty())]
-                }
+                },
+                stop=["End of response."]
             )
             print("[DEBUG] response", response)
         message = {"role": "assistant", "content": response["output"]}
