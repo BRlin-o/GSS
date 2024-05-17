@@ -1,0 +1,7 @@
+knowledge_bases:
+  JEGO: 
+    knowledge_base_id: "4SGYCATMVC"
+    s3_path: "s3://llm-knowladgebase/JEGO/Gogoro JEGO 系列Smartscooter® 智慧電動機車使用手冊(2024.05).pdf"
+  CrossOver: 
+    knowledge_base_id: "RTVIA3VQNZ"
+    s3_path: "s3://llm-knowladgebase/CrossOver_br/Gogoro CrossOver 系列 Smartscooter® 智慧電動機車使用手冊(2023.12).pdf"
