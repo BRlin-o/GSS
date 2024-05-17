@@ -48,7 +48,7 @@ class StreamHandler(BaseCallbackHandler):
         將新令牌附加到文本並更新 Streamlit 容器。
         """
         self.text += token
-        self.container.markdown(self.text)
+        self.container.markdown(self.text, unsafe_allow_html=True)
 
 def set_page_config() -> None:
     """
