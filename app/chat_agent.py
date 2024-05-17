@@ -3,21 +3,14 @@ import random
 from io import BytesIO
 import os
 from typing import List, Tuple, Union, Dict
-import boto3
-import tempfile
 
 import streamlit as st
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain.chains import ConversationChain, ConversationalRetrievalChain
 from langchain.memory import ConversationBufferWindowMemory
-from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from langchain_community.utilities import SerpAPIWrapper
-from langchain_community.retrievers import AmazonKnowledgeBasesRetriever
 from langchain.agents import AgentExecutor, create_react_agent
 
 from PIL import Image, UnidentifiedImageError
-import pdfplumber
 
 from config import config
 from models import ChatModel
@@ -27,7 +20,6 @@ from tools import LLM_AGENT_TOOLS
 from dotenv import load_dotenv
 load_dotenv()
 
-
 INIT_MESSAGE = {
     "role": "assistant",
     "content": "尊貴的車主您好，我是您專屬的Gogoro Smart Scooter萬事通，很高興為您解答任何關於Gogoro的問題。",
@@ -36,6 +28,7 @@ INIT_MESSAGE = {
 class StreamHandler(BaseCallbackHandler):
     """
     Callback handler to stream the generated text to Streamlit.
+    Callback handler 用於將生成的文本流式傳輸到 Streamlit。
     """
 
     def __init__(self, container: st.container, initial_text: str="") -> None:
@@ -45,18 +38,22 @@ class StreamHandler(BaseCallbackHandler):
     def on_llm_new_token(self, token: str, **kwargs) -> None:
         """
         Append the new token to the text and update the Streamlit container.
+        將新令牌附加到文本並更新 Streamlit 容器。
         """
         self.text += token
         self.container.markdown(self.text)
 
-
 def set_page_config() -> None:
     """
     Set the Streamlit page configuration.
+    設置 Streamlit 頁面配置。
     """
     st.set_page_config(page_title="Chat with GSS", page_icon="🏍️", layout="wide")
 
 def render_chat_interface():
+    """
+    渲染聊天界面。
+    """
     st.title("🏍️ Gogoro Smart Scooter 萬事通")
     with st.container():
         col1, col2 = st.columns(2)
@@ -71,6 +68,7 @@ def render_chat_interface():
 def render_sidebar() -> Tuple[Dict, int, str]:
     """
     Render the sidebar UI and return the inference parameters.
+    渲染側邊欄 UI 並返回推理參數。
     """
     with st.sidebar:
         with st.expander("LLM Settings"):
@@ -79,25 +77,17 @@ def render_sidebar() -> Tuple[Dict, int, str]:
                 list(config["models"].keys()),
                 key=f"{st.session_state['widget_key']}_Model_Id",
             )
-            
-            role_select = st.selectbox(
-                'Role',
-                # ["Default", "Translator", "Writer", "Custom"],
-                list(config["prompts"].keys()),
-                key=f"{st.session_state['widget_key']}_role_Id",
-            )
-            # Set the initial value of the text area based on the selected role
-            st.session_state["role_prompt"] = config["prompts"].get(role_select, "")
-            role_prompt_text = st.session_state["role_prompt"]["prompt"]
-
             st.session_state["model_name"] = model_name_select
             model_config = config["models"][model_name_select]
+
+            # Set the initial value of the text area based on the selected role
+            # 根據選定的角色設置文本區域的初始值
+            st.session_state["role_prompt"] = CLAUDE_AGENT_PROMPT
 
             system_prompt_disabled = model_config.get("system_prompt_disabled", False)
             system_prompt = st.text_area(
                 "System Prompt",
-                # value=model_config.get("default_system_prompt", ""),
-                value = role_prompt_text,
+                value = st.session_state["role_prompt"].template,
                 key=f"{st.session_state['widget_key']}_System_Prompt",
                 disabled=system_prompt_disabled,
             )
@@ -165,6 +155,7 @@ def render_sidebar() -> Tuple[Dict, int, str]:
 def new_chat() -> None:
     """
     Reset the chat session and initialize a new conversation chain.
+    重置聊天會話並初始化新的對話鏈。
     """
     st.session_state["messages"] = [INIT_MESSAGE]
     st.session_state["langchain_messages"] = []
@@ -175,6 +166,7 @@ def display_chat_messages(
 ) -> None:
     """
     Display chat messages and uploaded images in the Streamlit app.
+    顯示聊天消息和上傳的圖片。
     """
     for message in st.session_state.messages:
         print("[DEBUG] st.session_state.message", message)
@@ -194,6 +186,7 @@ def display_images(
 ) -> None:
     """
     Display uploaded images in the chat message.
+    在聊天消息中顯示上傳的圖片。
     """
     num_cols = 10
     cols = st.columns(num_cols)
@@ -222,6 +215,7 @@ def display_images(
 def display_user_message(message_content: Union[str, List[dict]]) -> None:
     """
     Display user message in the chat message.
+    顯示用戶消息。
     """
     if isinstance(message_content, str):
         message_text = message_content
@@ -237,6 +231,7 @@ def display_user_message(message_content: Union[str, List[dict]]) -> None:
 def display_assistant_message(message_content: Union[str, dict]) -> None:
     """
     Display assistant message in the chat message.
+    顯示助理消息。
     """
     if isinstance(message_content, str):
         st.markdown(message_content)
@@ -249,6 +244,7 @@ def langchain_messages_format(
 ) -> List[Union["AIMessage", "HumanMessage"]]:
     """
     Format the messages for the LangChain conversation chain.
+    格式化 LangChain 對話鏈的消息。
     """
     from langchain_core.messages import AIMessage, HumanMessage
 
@@ -265,7 +261,10 @@ def langchain_messages_format(
 def _handle_error(error)->str:
     return str(error)[:50]
 
-def get_agentic_chatbot_conversation_chain(chat_model: ChatModel, verbose: bool, memory_window: int, memory: ConversationBufferWindowMemory = None) -> ConversationChain:
+def get_agentic_chatbot_conversation_chain(chat_model: ChatModel, verbose: bool, memory_window: int, memory: ConversationBufferWindowMemory = None):
+    """
+    獲取 agent chain。
+    """
     if memory is None:
         memory = ConversationBufferWindowMemory(
             k=memory_window,
@@ -297,37 +296,23 @@ def get_agentic_chatbot_conversation_chain(chat_model: ChatModel, verbose: bool,
     )
 
     # Store LLM generated responses
+    # 存儲 LLM 生成的response
     if "messages" not in st.session_state:
         st.session_state.messages = [INIT_MESSAGE]
 
     return agent_chain
 
-def generate_response(
-    conversation: ConversationChain, input: Union[str, List[dict]]
-) -> str:
-    """
-    Generate a response from the conversation chain with the given input.
-    """
-    return conversation.invoke(
-        {
-            "input": input, 
-            "car_model": st.session_state["car_model"], 
-            "language": st.session_state["chat_lang"]
-        }, 
-        {
-            "callbacks": [StreamHandler(st.empty())]
-        }
-    )
-
 def main() -> None:
     """
     Main function to run the Streamlit app.
+    主函數運行 Streamlit 應用程序。
     """
     set_page_config()
 
     car_model, chat_lang = render_chat_interface()
 
     # Generate a unique widget key only once
+    # 生成唯一的 widget 鍵
     if "widget_key" not in st.session_state:
         st.session_state["widget_key"] = str(random.randint(1, 1000000))
 
@@ -365,11 +350,13 @@ def main() -> None:
             st.markdown(prompt)
 
     # Modify langchain_messages format
+    # 修改 langchain_messages 格式
     st.session_state["langchain_messages"] = langchain_messages_format(
         st.session_state["langchain_messages"]
     )
 
     # Generate a new response if last message is not from assistant
+    # 如果最後一條消息不是來自助手，則生成新的響應
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             response = conv_chain.invoke(
