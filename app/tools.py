@@ -14,7 +14,7 @@ bedrock_runtime = boto3.client("bedrock-runtime")
 
 claude_llm = BedrockChat(
     model_id=model_id,
-    model_kwargs={"max_tokens_to_sample": 500, "temperature": 0.0},
+    model_kwargs={"max_tokens": 500, "temperature": 0.0},
 )
 
 rag_qa_chain = get_rag_chain(kb_id, claude_llm)
