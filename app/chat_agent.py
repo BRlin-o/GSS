@@ -65,7 +65,7 @@ def render_chat_interface():
     with st.container():
         col1, col2 = st.columns(2)
         with col1:
-            car_model = st.selectbox("車型", ["JEGO", "CrossOver"])
+            car_model = st.selectbox("車型", ["CrossOver", "Delight", "JEGO", "SuperSport", "VIVA MIX", "VIVA XL", "VIVA", "S1", "S2", "S3"])
             st.session_state["car_model"] = car_model
         with col2:
             chat_lang = st.selectbox("語言", ["繁體中文", "English"])
