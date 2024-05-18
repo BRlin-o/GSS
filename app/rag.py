@@ -15,5 +15,6 @@ def get_rag_chain(kb_id, llm):
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=False,
+        verbose=True,
         input_key="question",
     )
