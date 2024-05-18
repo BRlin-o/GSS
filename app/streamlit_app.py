@@ -6,6 +6,7 @@ from typing import List, Tuple, Union, Dict
 
 import streamlit as st
 from langchain.callbacks.base import BaseCallbackHandler
+from langchain.callbacks.streaming_stdout_final_only import FinalStreamingStdOutCallbackHandler
 from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
@@ -19,11 +20,6 @@ from models import ChatModel
 from prompts import CLAUDE_AGENT_PROMPT
 from tools import LLM_AGENT_TOOLS
 from uis import INIT_MESSAGE, set_page_config, render_chat_interface, render_sidebar
-
-# tools_list = render_text_description(LLM_AGENT_TOOLS)
-# print("[DEBUG] tools_list", tools_list)
-# tool_names = ", ".join((t.name for t in LLM_AGENT_TOOLS))
-# print("[DEBUG] tool_names", tool_names)
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -187,6 +183,8 @@ def main() -> None:
     set_page_config()
 
     car_model, chat_lang = render_chat_interface()
+    global CAR_MODEL
+    CAR_MODEL = car_model
 
     # Generate a unique widget key only once
     # 生成唯一的 widget 鍵
@@ -254,7 +252,6 @@ def main() -> None:
             print("[DEBUG] response", response)
         message = {"role": "assistant", "content": response["output"]}
         st.session_state.messages.append(message)
-
 
 if __name__ == "__main__":
     main()

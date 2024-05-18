@@ -14,6 +14,11 @@ def set_page_config() -> None:
     """
     st.set_page_config(page_title="Chat with GSS", page_icon="🏍️", layout="wide")
 
+def set_CAR_MODEL_From_Session():
+    global CAR_MODEL
+    CAR_MODEL = st.session_state["car_model"]
+    print("[DEBUG] set_CAR_MODEL_From_Session", CAR_MODEL)
+
 def render_chat_interface():
     """
     渲染聊天界面。
@@ -22,7 +27,11 @@ def render_chat_interface():
     with st.container():
         col1, col2 = st.columns(2)
         with col1:
-            car_model = st.selectbox("車型", ["CrossOver", "Delight", "JEGO", "SuperSport", "VIVA MIX", "VIVA XL", "VIVA", "S1", "S2", "S3"])
+            car_model = st.selectbox(
+                "車型", 
+                ["CrossOver", "Delight", "JEGO", "SuperSport", "VIVA MIX", "VIVA XL", "VIVA", "S1", "S2", "S3"],
+                on_change=set_CAR_MODEL_From_Session
+            )
             st.session_state["car_model"] = car_model
         with col2:
             chat_lang = st.selectbox("語言", ["繁體中文", "English"])
@@ -77,7 +86,8 @@ def render_sidebar(model_list, default_prompt) -> Tuple[Dict, int, str]:
                     "Temperature",
                     min_value=0.0,
                     max_value=1.0,
-                    value=model_config.get("temperature", .5),
+                    # value=model_config.get("temperature", .5),
+                    value=.5,
                     step=0.1,
                     key=f"{st.session_state['widget_key']}_Temperature",
                 )
