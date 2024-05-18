@@ -103,7 +103,7 @@ def render_sidebar() -> Tuple[Dict, int, str]:
                     "Temperature",
                     min_value=0.0,
                     max_value=1.0,
-                    value=model_config.get("temperature", 1.0),
+                    value=model_config.get("temperature", .5),
                     step=0.1,
                     key=f"{st.session_state['widget_key']}_Temperature",
                 )

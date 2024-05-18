@@ -17,14 +17,17 @@ models:
     max_tokens: 4096
     memory_window: 10
     max_top_k: 500
-  Mistral Large:
-    model_id: "mistral.mistral-large-2402-v1:0"
-    input_format: "text"
-    system_prompt_disabled: true
+  llama3 8B:
+    model_id: "meta.llama3-70b-instruct-v1:0"
+    input_format: "list_of_dicts"
     temperature: 1.0
     top_p: 1.0
-    top_k: 200
-    max_tokens: 4096
-    memory_window: 10
-    max_top_k: 200
-    image_upload_disabled: true
+    top_k: 500
+    max_gen_len: 4096
+  llama3 70B:
+    model_id: "meta.llama3-70b-instruct-v1:0"
+    input_format: "list_of_dicts"
+    temperature: 1.0
+    top_p: 1.0
+    top_k: 500
+    max_gen_len: 4096
