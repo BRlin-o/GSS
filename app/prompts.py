@@ -283,8 +283,6 @@ Final Answer: [your {language} response here]
 End of response.
 ```
 
-Begin!
-
 The conversation history is within the <conversation_history> XML tags below, Hu refers to human:
 <conversation_history>
 {chat_history}
