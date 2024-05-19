@@ -217,7 +217,7 @@ def main() -> None:
     # Image uploader
     if "file_uploader_key" not in st.session_state:
         st.session_state["file_uploader_key"] = 0
-
+    
     # Display chat messages
     uploaded_files = []
     display_chat_messages(uploaded_files)
@@ -257,6 +257,7 @@ def main() -> None:
             print("[DEBUG] response", response)
         message = {"role": "assistant", "content": response["output"]}
         st.session_state.messages.append(message)
+        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
