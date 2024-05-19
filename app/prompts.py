@@ -273,7 +273,6 @@ To use a tool, please use the following format:
 Thought: Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input with Gogoro {car_model} to the action
-... (This Thought/Action/Action Input can be repeated N times, but not more than 3 times)
 End of response.
 ```
 
@@ -284,12 +283,12 @@ Final Answer: [your {language} response here]
 End of response.
 ```
 
+Begin!
+
 The conversation history is within the <conversation_history> XML tags below, Hu refers to human:
 <conversation_history>
 {chat_history}
 </conversation_history>
-
-Begin!
 
 Here is the next reply the assistant must respond to:
 <human_reply>
