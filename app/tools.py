@@ -37,7 +37,8 @@ def call_search(query):
     global CAR_MODEL;
     CAR_MODEL = st.session_state["car_model"]
     print("[DEBUG] call_search - CAR_MODEL: ", CAR_MODEL)
-    super_query = f"{query}？如果有任何類似'![]()'的圖片markdown語法務必response(包含![]()的語法)"
+    super_query = f"{query}？"
+    # super_query = f"{query}？如果有任何類似'![]()'的內容，務必response(包含![]()的語法)。Finally, you don't know the answer, don't try to make up an answer."
     return get_rag_chain(kb_id, claude_llm, CAR_MODEL)(super_query)
 
 LLM_AGENT_TOOLS = [

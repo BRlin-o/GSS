@@ -51,7 +51,7 @@ def display_chat_messages(
     顯示聊天消息和上傳的圖片。
     """
     for message in st.session_state.messages:
-        print("[DEBUG] st.session_state.message", message)
+        # print("[DEBUG] st.session_state.message", message)
         with st.chat_message(message["role"]):
             if uploaded_files and "images" in message and message["images"]:
                 display_images(message["images"], uploaded_files)
