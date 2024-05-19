@@ -12,6 +12,7 @@ from langchain_community.chat_message_histories import StreamlitChatMessageHisto
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.tools.render import render_text_description
 from langchain.prompts.prompt import PromptTemplate
+from langchain.callbacks.manager import CallbackManager
 
 from PIL import Image, UnidentifiedImageError
 
@@ -192,7 +193,11 @@ def main() -> None:
         st.session_state["widget_key"] = str(random.randint(1, 1000000))
 
     model_kwargs, memory_window = render_sidebar(config["models"], CLAUDE_AGENT_PROMPT)
-    chat_model = ChatModel(st.session_state["model_name"], model_kwargs)
+    chat_model = ChatModel(
+        st.session_state["model_name"], 
+        model_kwargs, 
+        callback_manager=CallbackManager([FinalStreamingStdOutCallbackHandler()])
+    )
     memory = ConversationBufferWindowMemory(
         k=memory_window,
         ai_prefix="Assistant",

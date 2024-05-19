@@ -1,3 +1,4 @@
+import os
 import boto3
 import streamlit as st
 from langchain.agents import Tool
@@ -13,7 +14,7 @@ CAR_MODEL = "CrossOver"
 # model_id = config["models"]["llama3 70B"]["model_id"]
 model_id = config["models"]["Claude 3 Haiku"]["model_id"]
 # kb_id = config["rags"]["JEGO"]["knowledge_base_id"]
-kb_id = "TAQ9SHSXJD"
+kb_id = os.getenv("GOGORO_SEARCH_KNOWLEDGE_BASE_ID")
 
 bedrock_runtime = boto3.client("bedrock-runtime")
 
@@ -45,7 +46,8 @@ LLM_AGENT_TOOLS = [
         func=lambda query: call_search(query),
         description=(
             "Use when you are asked any questions about Gogoro."
-            " The Input should be a correctly formatted question."
+            " The Input should be a correctly formatted question, and using 繁體中文."
+            " If the response contains any markdown syntax like `![]()`, please make sure to display it directly in the chat, as the frontend can render markdown to show image data."
         ),
     )
 ]

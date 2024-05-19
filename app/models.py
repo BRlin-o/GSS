@@ -1,13 +1,15 @@
 from typing import Dict, List, Union
 from config import config
 
+from langchain.callbacks.streaming_stdout_final_only import FinalStreamingStdOutCallbackHandler
 from langchain_core.messages import AIMessage, HumanMessage
+from langchain.callbacks.manager import CallbackManager
 from langchain_aws import BedrockChat
 # from langchain.llms.bedrock import Bedrock
 # import boto3
 
 class ChatModel:
-    def __init__(self, model_name: str, model_kwargs: Dict, callback=None):
+    def __init__(self, model_name: str, model_kwargs: Dict, callback_manager: CallbackManager = None, callbacks: List = None):
         self.model_config = config["models"][model_name]
         self.model_id = self.model_config["model_id"]
         self.model_kwargs = model_kwargs
@@ -15,6 +17,8 @@ class ChatModel:
             model_id=self.model_id, 
             model_kwargs=model_kwargs, 
             streaming=True,
+            callback_manager=callback_manager, 
+            callbacks=callbacks
         )
 
     def format_prompt(self, prompt: str) -> Union[str, List[Dict]]:
