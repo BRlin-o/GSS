@@ -273,6 +273,7 @@ To use a tool, please use the following format:
 Thought: Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input with Gogoro {car_model} to the action
+... (This Thought/Action/Action Input can be repeated N times, but not more than 3 times)
 End of response.
 ```
 
