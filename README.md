@@ -27,15 +27,16 @@
     - llama 3是另外我們想做fine-tuning，同時也看到AWS前幾天在Amazon Bedrock上支援了imported model，讓我們可以把自己訓練好的模型上傳，在系統端可以直接透過bedrock的窗口進行使用，因此也能無痛接軌我們目前的Design Pattern。
   - Cohere Embed Multilingual：作為我們knowledge base(RAG)首選的embedding Model，用來幫助我們對Data Source進行檢索
 
-## 系統架構
-
-### 簡易版
-![Architecture-Simple](https://raw.githubusercontent.com/BRlin-o/GSS/main/images/Architecture-Simple.png)
-### 未來展望
-![Architecture-Future](https://raw.githubusercontent.com/BRlin-o/GSS/main/images/Architecture-Future.png)
 ## 開始使用
 
 ```
 pip install -r requirements.txt
 streamlit run app/chat_agent.py
 ```
+
+## 系統架構
+
+### 簡易版
+![Architecture-Simple](https://raw.githubusercontent.com/BRlin-o/GSS/main/images/Architecture-Simple.png)
+### 未來展望
+![Architecture-Future](https://raw.githubusercontent.com/BRlin-o/GSS/main/images/Architecture-Future.png)
