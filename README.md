@@ -35,7 +35,7 @@ https://github.com/BRlin-o/GSS/assets/34859596/657486f4-76b2-4bc1-a8c8-09ea283af
 
 ```
 pip install -r requirements.txt
-streamlit run app/chat_agent.py
+streamlit run app/streamlit_app.py
 ```
 
 ## 系統架構
