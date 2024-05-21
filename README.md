@@ -3,6 +3,10 @@
 這是一個為Gogoro車主量身打造的AI助手：Gogoro Smart Scooter萬事通，目標是使用 Generative AI 技術，匯整 Gogoro Smart Scooter 各車種車主手冊的內容，製作成一個可以回答 Gogoro 車
 主 Smart Scooter 相關問題的 Agent。車主手冊內容包含文字、表格與圖像，均是 Agent 可取用的知識/ 資訊來源。此外，不同車種的車主手冊內容，有同也有異，Agent 須統整這些內容，精準回答車主的提問，甚至車主的提問可能不完整，Agent 可透過與車主對話來釐清問題與回答。
 
+<video id="video" controls="" preload="none">
+      <source id="mp4" src="https://raw.githubusercontent.com/BRlin-o/GSS/main/images/imag_demo.mkv" type="video/mp4">
+</videos>
+
 ## 專案特色
 
 ### Streamlit
