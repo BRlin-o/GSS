@@ -2,3 +2,5 @@
 .env
 documents/*
 app/static/**/** */.png
+
+lab/output/*
