@@ -56,7 +56,7 @@ https://github.com/BRlin-o/GSS/assets/34859596/657486f4-76b2-4bc1-a8c8-09ea283af
 通過以下方式聯繫我們：
 
 - Email: brend.main@gmail.com
-- GitHub Issues: [Issues 頁面]()
-- 
+- GitHub Issues: [Issues 頁面](https://github.com/BRlin-o/GSS/issues)
+
 ## 授權條款
 本專案採用 MIT 授權條款。詳見 LICENSE 文件 了解更多信息。
