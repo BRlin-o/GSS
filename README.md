@@ -1,6 +1,6 @@
-# Gogoro Smart Scooter Expert
+# Gogoro Smart Scooter
 
-Gogoro Smart Scooter Expert is an AI Agent specifically designed for Gogoro scooter owners. The goal is to utilize Generative AI technology to integrate content from various Gogoro Smart Scooter user manuals, creating an intelligent agent that can answer questions related to Gogoro scooters. The content from the user manuals includes text, tables, and images, all of which serve as knowledge sources for the AI Agent. The agent can synthesize these contents to accurately respond to owners' inquiries and clarify incomplete questions through dialogue.
+Gogoro Smart Scooter is an AI Agent specifically designed for Gogoro scooter owners. The goal is to utilize Generative AI technology to integrate content from various Gogoro Smart Scooter user manuals, creating an intelligent agent that can answer questions related to Gogoro scooters. The content from the user manuals includes text, tables, and images, all of which serve as knowledge sources for the AI Agent. The agent can synthesize these contents to accurately respond to owners' inquiries and clarify incomplete questions through dialogue.
 
 **This project was awarded the "Excellence Award (Best)" in the Gogoro category at the "AIWave: Taiwan Generative AI Applications Hackathon".**
 
